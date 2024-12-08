@@ -5,10 +5,19 @@ import { Button } from './ui/button';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
+import Editor from './Editor';
+import useOwner from '@/lib/useOwner';
+import DeleteDocument from './DeleteDocument';
+import InviteUser from './InviteUser';
+import ManageUsers from './ManageUsers';
+import Avatars from './Avatars';
+
 const Document = ({ id }: { id: string }) => {
   const [input, setInput] = useState('');
   const [data, loading, error] = useDocumentData(doc(db, 'documents', id));
   const [isUpdating, startTransition] = useTransition();
+  const isOwner = useOwner();
+
   useEffect(() => {
     if (data) {
       setInput(data.title);
@@ -25,7 +34,7 @@ const Document = ({ id }: { id: string }) => {
     }
   };
   return (
-    <div>
+    <div className="flex-1 h-full bg-white p-5">
       <div className="flex max-w-6xl mx-auto justify-between pb-5">
         <form onSubmit={updateTitle} className="flex flex-1 space-x-2">
           {/* update title... */}
@@ -35,12 +44,27 @@ const Document = ({ id }: { id: string }) => {
           </Button>
 
           {/* if */}
+          {isOwner && (
+            <>
+              {/* invite user  */}
+              {/* delete document */}
+              <DeleteDocument />
+              <InviteUser />
+            </>
+          )}
           {/* isOwner && InviteUser, DeleteDocument */}
         </form>
       </div>
-      {/* manage users */}
-      <div>{/* avatars */}</div>
+
+      <div className="flex max-w-6xl mx-auto justify-between items-center mb-5">
+        <ManageUsers />
+        {/* manage users */}
+        {/* avatars */}
+        <Avatars />
+      </div>
+      <hr className="pb-10" />
       {/* collaborative editor */}
+      <Editor />
     </div>
   );
 };

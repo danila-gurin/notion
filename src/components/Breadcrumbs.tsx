@@ -25,11 +25,16 @@ const Breadcrumbs = () => {
         {segments.map((segment, index) => {
           if (!segment) return null;
           const href = `/${segments.slice(0, index + 1).join('/')}`;
+          const isLast = index === segment.length - 1;
           return (
             <Fragment key={segment}>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={href}>{segment}</BreadcrumbLink>
+                {isLast ? (
+                  <BreadcrumbPage>{segment}</BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink href={href}>{segment}</BreadcrumbLink>
+                )}
               </BreadcrumbItem>
             </Fragment>
           );
